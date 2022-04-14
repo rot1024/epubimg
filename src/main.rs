@@ -1,4 +1,4 @@
-use clap::Clap;
+use clap::Parser;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::{
@@ -11,12 +11,13 @@ use std::{
 };
 use zip::ZipArchive;
 
-#[derive(Debug, Clap)]
-#[clap(about = "Image file extractor from ePub file")]
+#[derive(Parser, Debug)]
+/// Image file extractor from ePub file
 struct App {
-    #[clap(about = "epub or zip file paths")]
+    /// epub or zip file paths
     files: Vec<String>,
-    #[clap(short, long, about = "Use full name for output directory name")]
+    /// Use full name for output directory name
+    #[clap(short, long)]
     fullname: bool,
 }
 
