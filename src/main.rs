@@ -11,6 +11,8 @@ use std::{
 };
 use zip::ZipArchive;
 
+const EXT: &str = "epub";
+
 #[derive(Parser, Debug)]
 /// Image file extractor from ePub file
 struct App {
@@ -37,7 +39,16 @@ fn main2() -> Result<(), String> {
         .map(|p| {
             metadata(&p).and_then(|m| {
                 if m.is_dir() {
-                    read_dir(&p).map(|d| d.filter_map(|e| e.ok()).map(|e| e.path()).collect())
+                    read_dir(&p).map(|d| {
+                        d.filter_map(|e| e.ok())
+                            .map(|e| e.path())
+                            .filter(|p| {
+                                p.extension()
+                                    .map(|e| e.to_string_lossy() == EXT)
+                                    .unwrap_or_default()
+                            })
+                            .collect()
+                    })
                 } else {
                     Ok(vec![PathBuf::from(p)])
                 }
